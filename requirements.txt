@@ -1,0 +1,10 @@
+sqlalchemy
+bcrypt==4.0.1
+fastapi
+pydantic_settings
+pydantic
+fastapi[standard]
+passlib[bcrypt]
+passlib
+python-jose[cryptography]
+jose
