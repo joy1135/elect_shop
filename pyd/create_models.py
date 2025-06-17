@@ -1,8 +1,9 @@
 from pydantic import BaseModel, validator, EmailStr, Field, EmailStr, field_validator
 from typing import List, Optional
 import re
-
 from pyd.base_models import OrderItemBase
+
+FORBIDDEN_WORDS = {"мат", "спам", "фейк"}
 
 class RoleCreate(BaseModel):
     name: str
@@ -32,7 +33,7 @@ class ProductCreate(BaseModel):
     price: float = Field(..., gt=0, description="Price must be greater than 0")
     description: Optional[str] = None
     remaining_stock: Optional[float] = None
-    category_id: int  # Сделали обязательным
+    category_id: int
 
     @validator("price")
     def validate_price(cls, v):
@@ -57,9 +58,27 @@ class OrderCreate(BaseModel):
 
 class ReviewCreate(BaseModel):
     product_id: int
-    user_id: int
     rating: int = Field(..., ge=1, le=5)
-    text: Optional[str] = None
+    text: Optional[str] = Field(None, max_length=1000)
+
+    @validator("text")
+    def validate_text(cls, value, values):
+        if value:
+            value = re.sub(r"<.*?>", "", value)
+            value = value.strip()
+
+            if "http" in value.lower() or "www" in value.lower():
+                raise ValueError("Отзыв не должен содержать ссылки")
+
+            lower_text = value.lower()
+            for word in FORBIDDEN_WORDS:
+                if word in lower_text:
+                    raise ValueError(f"Отзыв содержит запрещённое слово: '{word}'")
+
+        if values.get("rating") is not None and values["rating"] <= 2 and not value:
+            raise ValueError("Пожалуйста, оставьте комментарий, если ставите низкую оценку")
+
+        return value
 
 class OrderItemInput(BaseModel):
     product_id: int

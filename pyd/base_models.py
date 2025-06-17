@@ -15,8 +15,14 @@ class UserBase(BaseModel):
     username: str
     email: EmailStr
 
-class UserRead(UserBase):
+class UserUpdate(UserBase):
+    password: Optional[str] = None
+    role_id: Optional[int] = None 
+
+class UserRead(BaseModel):
     id: int
+    username: str
+    email: EmailStr
     role_id: int
     created_at: datetime
 
@@ -28,7 +34,7 @@ class CategoryBase(BaseModel):
 
 class CategoryRead(CategoryBase):
     id: int
-
+    created_at: datetime
     class Config:
         from_attributes = True
 
@@ -93,6 +99,11 @@ class ReviewBase(BaseModel):
 class ReviewRead(ReviewBase):
     id: int
     created_at: datetime
+    updated_at: datetime
 
     class Config:
         from_attributes = True
+
+class ReviewUpdate(BaseModel):
+    rating: int = Field(..., ge=1, le=5)
+    text: Optional[str] = None

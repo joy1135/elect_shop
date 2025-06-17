@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, UTC
 from sqlalchemy.orm import Session
 from database import engine
 import models as m 
@@ -11,7 +11,7 @@ def hash_password(plain_password: str) -> str:
     return bcrypt.hashpw(plain_password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 with Session(bind=engine) as session:
-    now = datetime.utcnow() 
+    now = datetime.now(UTC)
 
     admin_role = m.Role(name="Админ")
     user_role = m.Role(name="Покупатель")
@@ -23,8 +23,8 @@ with Session(bind=engine) as session:
     status_delivered = m.OrderStatus(name="доставлен")
     status_cancelled = m.OrderStatus(name="отменён")
 
-    phone = m.Category(name="Телефон")
-    tv = m.Category(name="ТВ")
+    phone = m.Category(name="Телефон",created_at=now)
+    tv = m.Category(name="ТВ",created_at=now)
 
     admin_user = m.User(
         username="Админ",

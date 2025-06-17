@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Numeric, ForeignKey, DateTime, Text
 from sqlalchemy.orm import relationship
-import datetime
+from datetime import datetime, UTC
 from database import Base
 
 class Role(Base):
@@ -19,7 +19,7 @@ class User(Base):
     email = Column(String(255), unique=True, nullable=False)
     password = Column(String(255), nullable=False)
     role_id = Column(Integer, ForeignKey("roles.id"), nullable=False)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now(UTC))
 
     role = relationship("Role", back_populates="users")
     orders = relationship("Order", back_populates="user")
@@ -30,6 +30,7 @@ class Category(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(100), unique=True, nullable=False)
+    created_at = Column(DateTime, default=datetime.now(UTC))
 
     products = relationship("Product", back_populates="category")
 
@@ -42,7 +43,7 @@ class Product(Base):
     description = Column(String(255), nullable=True)
     remaining_stock = Column(Numeric, nullable=True)
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now(UTC))
 
     category = relationship("Category", back_populates="products")
     reviews = relationship("Review", back_populates="product")
@@ -74,8 +75,8 @@ class Order(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     status_id = Column(Integer, ForeignKey("order_statuses.id"), nullable=False)
     total_amount = Column(Numeric, nullable=False)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now(UTC))
+    updated_at = Column(DateTime, default=datetime.now(UTC), onupdate=datetime.now(UTC))
 
     user = relationship("User", back_populates="orders")
     status = relationship("OrderStatus", back_populates="orders")
@@ -89,7 +90,8 @@ class Review(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     rating = Column(Integer, nullable=False)
     text = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now(UTC))
+    updated_at = Column(DateTime, default=datetime.now(UTC), onupdate=datetime.now(UTC))
 
     product = relationship("Product", back_populates="reviews")
     user = relationship("User", back_populates="reviews")
