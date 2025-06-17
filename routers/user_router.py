@@ -6,7 +6,7 @@ from database import get_db
 from sqlalchemy.orm import Session
 import models as m
 import pyd
-from auth import authenticate_user, create_access_token, get_current_user, hash_password
+from auth import get_current_user, hash_password
 
 router = APIRouter(
     prefix="/user",

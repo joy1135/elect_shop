@@ -127,7 +127,7 @@ def update_order_status(
 @router.put("/update-items/{order_id}", response_model=pyd.OrderBase)
 def update_order_items(
     order_id: int,
-    items_data: pyd.OrderItemsUpdate,  # создадим ниже
+    items_data: pyd.OrderItemsUpdate,
     db: Session = Depends(get_db),
     current_user: m.User = Depends(get_current_user)
 ):

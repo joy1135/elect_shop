@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from config import settings
 
 engine = create_engine(
-    f"sqlite:///./{settings.DB_NAME}.sqlite",
+    f"sqlite:///./{settings.DB_NAME}",
     connect_args = {"check_same_thread": False},
 )
 
